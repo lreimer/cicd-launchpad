@@ -1,0 +1,28 @@
+[
+  {
+    "name": "com.sun.media.sound.MidiInDeviceProvider",
+    "allDeclaredConstructors": true,
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicConstructors": true,
+    "allPublicMethods": true
+  },
+  {
+    "name": "com.sun.media.sound.Platform",
+    "fields": [
+      {
+        "name": "loadedLibs"
+      }
+    ],
+    "methods": [
+      {
+        "name": "loadLibraries",
+        "parameterTypes": []
+      },
+      {
+        "name": "readProperties",
+        "parameterTypes": []
+      }
+    ]
+  }
+]

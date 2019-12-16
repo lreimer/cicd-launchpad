@@ -23,7 +23,10 @@ dependencies {
     runtime 'org.fusesource.jansi:jansi:1.18'
 }
 
-mainClassName = 'dev.ops.tools.CiCdLaunchpad'
+application {
+    mainClassName = 'dev.ops.tools.CiCdLaunchpad'
+    applicationDefaultJvmArgs = ['-agentlib:native-image-agent=config-merge-dir=build/resources/main/META-INF/native-image']
+}
 
 task copyRuntimeLibs(type: Copy) {
     into "$buildDir/libs"
@@ -91,12 +94,13 @@ task graalNativeImage(description: 'Generate native image with GraalVM', depends
     commandLine = [
             'native-image',
             '-cp', getClasspath(),
-            '-H:ReflectionConfigurationFiles=extended-reflect.json',
+            //'-H:ReflectionConfigurationFiles=extended-reflect.json',
             '-H:+ReportUnsupportedElementsAtRuntime',
             '-H:+ReportExceptionStackTraces',
             '-H:+AddAllCharsets',
             '--initialize-at-run-time=org.fusesource.jansi.WindowsAnsiOutputStream',
             '--no-server',
+            // '--static',
             '--enable-http',
             '--enable-https',
             'dev.ops.tools.CiCdLaunchpad',
@@ -111,3 +115,9 @@ task copyEllipticCurveCrypto(type: Copy) {
 }
 
 graalNativeImage.finalizedBy copyEllipticCurveCrypto
+
+task copyDylibs(type: Copy) {
+    from file(System.getenv("GRAALVM_HOME") + "/jre/lib/")
+    into "$buildDir"
+    include "**/*.dylib"
+}

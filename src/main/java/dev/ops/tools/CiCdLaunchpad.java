@@ -17,11 +17,11 @@ class CiCdLaunchpad implements Runnable {
     private static final Logger LOGGER = LoggerFactory.getLogger(CiCdLaunchpad.class);
     public static final String DEVICE_NAME = "Launchpad Mini MK2";
 
-    @Option(names = {"-t", "--time"}, defaultValue = "5", description = "the refresh time")
-    private long time = 5;
+    @Option(names = {"-t", "--time"}, defaultValue = "500", description = "the refresh time")
+    private long time = 500;
 
-    @Option(names = {"-u", "--unit"}, defaultValue = "SECONDS", description = "the time unit")
-    private TimeUnit unit = TimeUnit.SECONDS;
+    @Option(names = {"-u", "--unit"}, defaultValue = "MILLISECONDS", description = "the time unit")
+    private TimeUnit unit = TimeUnit.MILLISECONDS;
 
     public static void main(String[] args) {
         CommandLine.run(new CiCdLaunchpad(), args);
@@ -35,10 +35,20 @@ class CiCdLaunchpad implements Runnable {
 
         LOGGER.info("Running CI/CD Launchpad ...");
 
-        MidiSystemProducer midiSystem = new MidiSystemProducer();
-        midiSystem.initialize();
-        midiSystem.register(new MidiMessageReceiver());
+        MidiSystemBridge midiSystem = new MidiSystemBridge();
+        Launchpad launchpad = new Launchpad();
 
-        Runtime.getRuntime().addShutdownHook(new Thread(midiSystem::destroy));
+        midiSystem.initialize(launchpad);
+        launchpad.reset();
+
+        Screensaver screensaver = new Screensaver(launchpad, time, unit);
+        screensaver.initialize();
+        screensaver.start();
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            screensaver.destroy();
+            launchpad.reset();
+            midiSystem.destroy();
+        }));
     }
 }
