@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 class CiCdLaunchpad implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CiCdLaunchpad.class);
+    public static final String DEVICE_NAME = "Launchpad Mini MK2";
 
     @Option(names = {"-t", "--time"}, defaultValue = "5", description = "the refresh time")
     private long time = 5;
@@ -28,6 +29,16 @@ class CiCdLaunchpad implements Runnable {
 
     @Override
     public void run() {
+        // this seems to be required at least under Windows
+        System.setProperty("javax.sound.midi.Transmitter", "com.sun.media.sound.MidiInDeviceProvider#" + DEVICE_NAME);
+        System.setProperty("javax.sound.midi.Receiver", "com.sun.media.sound.MidiOutDeviceProvider#" + DEVICE_NAME);
 
+        LOGGER.info("Running CI/CD Launchpad ...");
+
+        MidiSystemProducer midiSystem = new MidiSystemProducer();
+        midiSystem.initialize();
+        midiSystem.register(new MidiMessageReceiver());
+
+        Runtime.getRuntime().addShutdownHook(new Thread(midiSystem::destroy));
     }
 }
