@@ -1,11 +1,11 @@
 [
   {
     "name": "com.sun.media.sound.MidiInDeviceProvider",
-    "allDeclaredConstructors": true,
     "allDeclaredFields": true,
     "allDeclaredMethods": true,
-    "allPublicConstructors": true,
-    "allPublicMethods": true
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true
   },
   {
     "name": "com.sun.media.sound.Platform",
