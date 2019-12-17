@@ -5,10 +5,21 @@
     "allDeclaredMethods": true,
     "allPublicMethods": true,
     "allDeclaredConstructors": true,
-    "allPublicConstructors": true
+    "allPublicConstructors": true,
+    "methods": [
+      {
+        "name": "nGetNumDevices",
+        "parameterTypes": []
+      }
+    ]
   },
   {
     "name": "com.sun.media.sound.Platform",
+    "allDeclaredFields": true,
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
     "fields": [
       {
         "name": "loadedLibs"

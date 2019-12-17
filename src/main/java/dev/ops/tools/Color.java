@@ -3,6 +3,9 @@ package dev.ops.tools;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
+/**
+ * Enum for the different supported Launchpad colors.
+ */
 public enum Color {
     NONE(64),
 

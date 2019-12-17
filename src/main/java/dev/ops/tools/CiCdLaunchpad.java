@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 class CiCdLaunchpad implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CiCdLaunchpad.class);
-    public static final String DEVICE_NAME = "Launchpad Mini MK2";
+    private static final String DEVICE_NAME = "Launchpad Mini";
 
     @Option(names = {"-t", "--time"}, defaultValue = "500", description = "the refresh time")
     private long time = 500;
@@ -38,16 +38,15 @@ class CiCdLaunchpad implements Runnable {
         MidiSystemBridge midiSystem = new MidiSystemBridge();
         Launchpad launchpad = new Launchpad();
 
+        midiSystem.infos();
         midiSystem.initialize(launchpad);
+
+        launchpad.initialize();
         launchpad.reset();
 
-        Screensaver screensaver = new Screensaver(launchpad, time, unit);
-        screensaver.initialize();
-        screensaver.start();
-
         Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            screensaver.destroy();
-            launchpad.reset();
+            LOGGER.info("Shutdown CI/CD Launchpad.");
+            launchpad.close();
             midiSystem.destroy();
         }));
     }

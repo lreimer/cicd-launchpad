@@ -14,6 +14,7 @@ targetCompatibility = "1.8"
 dependencies {
     implementation 'info.picocli:picocli:3.9.6'
     compile 'org.slf4j:slf4j-api:1.7.26'
+    compile 'org.apache.commons:commons-collections4:4.4'
 
     // compileOnly ':svm:19.2.1'
     // compileOnly 'org.graalvm.nativeimage:svm:19.3.0'
@@ -98,7 +99,8 @@ task graalNativeImage(description: 'Generate native image with GraalVM', depends
             '-H:+ReportUnsupportedElementsAtRuntime',
             '-H:+ReportExceptionStackTraces',
             '-H:+AddAllCharsets',
-            '--initialize-at-run-time=org.fusesource.jansi.WindowsAnsiOutputStream',
+            '-H:+TraceClassInitialization',
+            '--initialize-at-run-time=com.sun.media.sound,org.fusesource.jansi.WindowsAnsiOutputStream',
             '--no-server',
             // '--static',
             '--enable-http',
