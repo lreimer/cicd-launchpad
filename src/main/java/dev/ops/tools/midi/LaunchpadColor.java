@@ -1,12 +1,12 @@
-package dev.ops.tools;
+package dev.ops.tools.midi;
 
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Enum for the different supported Launchpad colors.
+ * Enum for the different supported colors.
  */
-public enum Color {
+public enum LaunchpadColor {
     NONE(64),
 
     DARK_RED(13),
@@ -27,11 +27,11 @@ public enum Color {
 
     private final int value;
 
-    Color(int value) {
+    LaunchpadColor(int value) {
         this.value = value;
     }
 
-    public static Color random() {
+    public static LaunchpadColor random() {
         Random random = ThreadLocalRandom.current();
         int i = random.nextInt(values().length);
         return values()[i];

@@ -1,5 +1,14 @@
 [
   {
+    "name": "com.sun.media.sound.MidiInDevice",
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredClasses": true,
+    "allPublicClasses": true
+  },
+  {
     "name": "com.sun.media.sound.Platform",
     "fields": [
       {
@@ -14,32 +23,6 @@
       {
         "name": "readProperties",
         "parameterTypes": []
-      }
-    ]
-  },
-  {
-    "name": "javax.sound.midi.MidiUnavailableException",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredClasses": true,
-    "allPublicClasses": true
-  },
-  {
-    "name": "com.sun.media.sound.MidiInDevice",
-    "allDeclaredConstructors": true,
-    "allPublicConstructors": true,
-    "allDeclaredMethods": true,
-    "allPublicMethods": true,
-    "allDeclaredClasses": true,
-    "allPublicClasses": true
-  },
-  {
-    "name": "sun.misc.Unsafe",
-    "fields": [
-      {
-        "name": "theUnsafe"
       }
     ]
   },
@@ -261,8 +244,25 @@
     ]
   },
   {
+    "name": "javax.sound.midi.MidiUnavailableException",
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredClasses": true,
+    "allPublicClasses": true
+  },
+  {
     "name": "picocli.CommandLine$AutoHelpMixin",
     "allDeclaredFields": true,
     "allDeclaredMethods": true
+  },
+  {
+    "name": "sun.misc.Unsafe",
+    "fields": [
+      {
+        "name": "theUnsafe"
+      }
+    ]
   }
 ]

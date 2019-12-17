@@ -1,4 +1,4 @@
-package dev.ops.tools;
+package dev.ops.tools.midi;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,11 +6,19 @@ import org.slf4j.LoggerFactory;
 import javax.sound.midi.*;
 
 /**
- * Producer implementation to obtain Receiver and Transmitter from MIDI system.
+ * Handler implementation to obtain Receiver and Transmitter from MIDI system.
  */
-public class MidiSystemBridge {
+public class MidiSystemHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(MidiSystemBridge.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MidiSystemHandler.class);
+
+    private static final String DEVICE_NAME = "Launchpad Mini";
+
+    static {
+        // this seems to be required at least under Windows
+        System.setProperty("javax.sound.midi.Transmitter", "com.sun.media.sound.MidiInDeviceProvider#" + DEVICE_NAME);
+        System.setProperty("javax.sound.midi.Receiver", "com.sun.media.sound.MidiOutDeviceProvider#" + DEVICE_NAME);
+    }
 
     private Transmitter transmitter;
     private Receiver receiver;
@@ -22,19 +30,19 @@ public class MidiSystemBridge {
         }
     }
 
-    public void initialize(Launchpad controller) {
+    public void initialize(LaunchpadDevice device) {
         LOGGER.info("Initializing MIDI system.");
 
         try {
             this.transmitter = MidiSystem.getTransmitter();
-            this.transmitter.setReceiver(controller);
+            this.transmitter.setReceiver(device);
         } catch (MidiUnavailableException e) {
             throw new IllegalStateException("Unable to get Transmitter from MIDI system.", e);
         }
 
         try {
             this.receiver = MidiSystem.getReceiver();
-            controller.setReceiver(receiver);
+            device.setReceiver(receiver);
         } catch (MidiUnavailableException e) {
             throw new IllegalStateException("Unable to get Receiver from MIDI system.", e);
         }

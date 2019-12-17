@@ -1,8 +1,7 @@
 package dev.ops.tools.screensaver;
 
-import dev.ops.tools.Color;
-import dev.ops.tools.Launchpad;
-import dev.ops.tools.Screensaver;
+import dev.ops.tools.midi.LaunchpadColor;
+import dev.ops.tools.midi.LaunchpadDevice;
 import org.apache.commons.collections4.iterators.LoopingIterator;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
 
@@ -18,14 +17,14 @@ import java.util.concurrent.TimeUnit;
  */
 public class WaveScreensaver implements Screensaver {
 
-    private final Launchpad launchpad;
+    private final LaunchpadDevice launchpad;
     private final long time;
     private final TimeUnit timeUnit;
     private final ScheduledExecutorService executorService;
     private final List<ScheduledFuture<?>> runnables;
-    private final List<Color> waveColors;
+    private final List<LaunchpadColor> waveColors;
 
-    public WaveScreensaver(Launchpad launchpad, long time, TimeUnit timeUnit) {
+    public WaveScreensaver(LaunchpadDevice launchpad, long time, TimeUnit timeUnit) {
         this.launchpad = launchpad;
         this.time = time;
         this.timeUnit = timeUnit;
@@ -33,19 +32,19 @@ public class WaveScreensaver implements Screensaver {
         this.runnables = new ArrayList<>();
         this.waveColors = new ArrayList<>();
 
-        waveColors.add(Color.BRIGHT_RED);
-        waveColors.add(Color.MEDIUM_RED);
-        waveColors.add(Color.DARK_RED);
-        waveColors.add(Color.BRIGHT_AMBER);
-        waveColors.add(Color.MEDIUM_AMBER);
-        waveColors.add(Color.DARK_AMBER);
-        waveColors.add(Color.BRIGHT_YELLOW);
-        waveColors.add(Color.MEDIUM_YELLOW);
-        waveColors.add(Color.DARK_YELLOW);
-        waveColors.add(Color.BRIGHT_GREEN);
-        waveColors.add(Color.MEDIUM_GREEN);
-        waveColors.add(Color.DARK_GREEN);
-        waveColors.add(Color.NONE);
+        waveColors.add(LaunchpadColor.BRIGHT_RED);
+        waveColors.add(LaunchpadColor.MEDIUM_RED);
+        waveColors.add(LaunchpadColor.DARK_RED);
+        waveColors.add(LaunchpadColor.BRIGHT_AMBER);
+        waveColors.add(LaunchpadColor.MEDIUM_AMBER);
+        waveColors.add(LaunchpadColor.DARK_AMBER);
+        waveColors.add(LaunchpadColor.BRIGHT_YELLOW);
+        waveColors.add(LaunchpadColor.MEDIUM_YELLOW);
+        waveColors.add(LaunchpadColor.DARK_YELLOW);
+        waveColors.add(LaunchpadColor.BRIGHT_GREEN);
+        waveColors.add(LaunchpadColor.MEDIUM_GREEN);
+        waveColors.add(LaunchpadColor.DARK_GREEN);
+        waveColors.add(LaunchpadColor.NONE);
     }
 
     @Override
@@ -84,8 +83,8 @@ public class WaveScreensaver implements Screensaver {
     private class WaveRunner implements Runnable {
 
         private final int row;
-        private final LoopingIterator<Color> iterator;
-        private final CircularFifoQueue<Color> queue;
+        private final LoopingIterator<LaunchpadColor> iterator;
+        private final CircularFifoQueue<LaunchpadColor> queue;
 
         public WaveRunner(int row) {
             this.row = row;
@@ -96,7 +95,7 @@ public class WaveScreensaver implements Screensaver {
         @Override
         public void run() {
             int index = 7;
-            for (Color color : queue) {
+            for (LaunchpadColor color : queue) {
                 launchpad.square(row, index, color);
                 index--;
             }
