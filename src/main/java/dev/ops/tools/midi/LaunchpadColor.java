@@ -37,6 +37,20 @@ public enum LaunchpadColor {
         return values()[i];
     }
 
+    public static LaunchpadColor forResult(String result) {
+        LaunchpadColor color;
+        if ("SUCCESS".equalsIgnoreCase(result)) {
+            color = BRIGHT_GREEN;
+        } else if ("UNSTABLE".equalsIgnoreCase(result)) {
+            color = BRIGHT_YELLOW;
+        } else if ("FAILURE".equalsIgnoreCase(result)) {
+            color = BRIGHT_RED;
+        } else {
+            color = NONE;
+        }
+        return color;
+    }
+
     public int getValue() {
         return value;
     }

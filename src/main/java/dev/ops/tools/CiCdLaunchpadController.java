@@ -1,6 +1,8 @@
 package dev.ops.tools;
 
+import dev.ops.tools.cicd.CiCdJob;
 import dev.ops.tools.cicd.CiCdServer;
+import dev.ops.tools.midi.LaunchpadColor;
 import dev.ops.tools.midi.LaunchpadDevice;
 import dev.ops.tools.midi.MidiSystemHandler;
 import dev.ops.tools.screensaver.Screensaver;
@@ -33,14 +35,21 @@ public class CiCdLaunchpadController extends LaunchpadDevice {
 
         screensavers.addAll(Screensaver.create(this));
 
-        // register callback for Job info
-        // ciCdServer.register()
+        ciCdServer.register(this::update);
         ciCdServer.initialize();
+    }
+
+    private void update(CiCdJob job) {
+        clear(job.getRow());
+        for (int i = 0; i < job.getResults().size(); i++) {
+            String result = job.getResult(i);
+            square(job.getRow(), i, LaunchpadColor.forResult(result));
+        }
     }
 
     @Override
     protected void handle(int command, int data1, int data2) {
-        LOGGER.debug("Received MIDI event[command={},data1={},data2={}]", command, data1, data2);
+        LOGGER.info("Received MIDI event[command={},data1={},data2={}]", command, data1, data2);
 
         if (command == 176 && data2 == 127) {
             // get index for top button press event

@@ -31,7 +31,7 @@ class CiCdLaunchpad implements Runnable {
     @Option(names = "-j", defaultValue = "true", description = "use Jenkins as CI/CD server")
     private boolean jenkins = true;
 
-    @Option(names = {"-f", "--file"}, paramLabel = "JSON_CONFIG", description = "the configuration file")
+    @Option(names = {"-f", "--file"}, paramLabel = "JSON_CONFIG", description = "the configuration file", required = true)
     private File config;
 
     public static void main(String[] args) {

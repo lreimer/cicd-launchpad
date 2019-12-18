@@ -13,8 +13,12 @@ targetCompatibility = "1.8"
 
 dependencies {
     implementation 'info.picocli:picocli:3.9.6'
+
     compile 'org.slf4j:slf4j-api:1.7.26'
     compile 'org.apache.commons:commons-collections4:4.4'
+
+    compile 'com.offbytwo.jenkins:jenkins-client:0.3.8'
+    compile 'org.glassfish:jakarta.json:1.1.6'
 
     // compileOnly ':svm:19.2.1'
     // compileOnly 'org.graalvm.nativeimage:svm:19.3.0'

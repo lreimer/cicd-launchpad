@@ -2,6 +2,7 @@ package dev.ops.tools.cicd;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Consumer;
 
 /**
  * Interface definition for CI/CD Server implementations.
@@ -11,6 +12,13 @@ public interface CiCdServer {
      * Initialize the CI/CD server.
      */
     void initialize();
+
+    /**
+     * Register a callback for CiCdJob updates.
+     *
+     * @param callback the callback
+     */
+    void register(Consumer<CiCdJob> callback);
 
     /**
      * Destroy the instance.

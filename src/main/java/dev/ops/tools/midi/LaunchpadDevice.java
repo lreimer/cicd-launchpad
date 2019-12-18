@@ -46,12 +46,18 @@ public abstract class LaunchpadDevice implements Receiver {
         }
     }
 
+    public void clear(int row) {
+        for (int j = 0; j < 8; j++) {
+            square(row, j, LaunchpadColor.NONE);
+        }
+    }
+
     /**
      * Rest all square buttons to no color.
      */
     public void reset() {
         for (int i = 0; i < 8; i++) {
-            for (int j = 0; j < 8; j++) {
+            for (int j = 0; j < 9; j++) {
                 square(i, j, LaunchpadColor.NONE);
             }
         }

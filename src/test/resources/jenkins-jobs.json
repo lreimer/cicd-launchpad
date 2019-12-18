@@ -1,0 +1,15 @@
+{
+  "url": "http://localhost:8080/",
+  "username": "admin",
+  "password": "admin",
+  "jobs": [
+    {
+      "row": 0,
+      "name": "Test 1"
+    },
+    {
+      "row": 1,
+      "name": "Test/Test 2"
+    }
+  ]
+}
