@@ -2,8 +2,8 @@ package dev.ops.tools.screensaver;
 
 import dev.ops.tools.midi.LaunchpadColor;
 import dev.ops.tools.midi.LaunchpadDevice;
-import org.apache.commons.collections4.iterators.LoopingIterator;
-import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.apache.commons.collections.buffer.CircularFifoBuffer;
+import org.apache.commons.collections.iterators.LoopingIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -89,20 +89,20 @@ public class WaveScreensaver implements Screensaver {
     private class WaveRunner implements Runnable {
 
         private final int row;
-        private final LoopingIterator<LaunchpadColor> iterator;
-        private final CircularFifoQueue<LaunchpadColor> queue;
+        private final LoopingIterator iterator;
+        private final CircularFifoBuffer queue;
 
         public WaveRunner(int row) {
             this.row = row;
-            this.iterator = new LoopingIterator<>(waveColors);
-            this.queue = new CircularFifoQueue<>(8);
+            this.iterator = new LoopingIterator(waveColors);
+            this.queue = new CircularFifoBuffer(8);
         }
 
         @Override
         public void run() {
             int index = 7;
-            for (LaunchpadColor color : queue) {
-                launchpad.square(row, index, color);
+            for (Object color : queue) {
+                launchpad.square(row, index, (LaunchpadColor) color);
                 index--;
             }
 
