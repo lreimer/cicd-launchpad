@@ -518,5 +518,23 @@
         "name": "theUnsafe"
       }
     ]
+  },
+  {
+    "name": "net.sf.json.regexp.Perl5RegexpMatcher",
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredClasses": true,
+    "allPublicClasses": true
+  },
+  {
+    "name": "net.sf.json.regexp.RegexpUtils",
+    "allDeclaredMethods": true,
+    "allPublicMethods": true,
+    "allDeclaredConstructors": true,
+    "allPublicConstructors": true,
+    "allDeclaredClasses": true,
+    "allPublicClasses": true
   }
 ]

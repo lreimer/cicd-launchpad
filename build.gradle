@@ -26,6 +26,7 @@ dependencies {
     runtime 'org.slf4j:slf4j-simple:1.7.26'
     runtime 'info.picocli:picocli-codegen:3.9.6'
     runtime 'org.fusesource.jansi:jansi:1.18'
+    runtime 'oro:oro:2.0.8'
 }
 
 application {
