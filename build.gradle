@@ -115,16 +115,16 @@ task graalNativeImage(description: 'Generate native image with GraalVM', depends
     ]
 }
 
+task copyJsound(type: Copy) {
+    from file(System.getenv("JAVA_HOME") + "/jre/lib/")
+    into "$buildDir"
+    include "**/libjsound.*"
+}
+
 task copyEllipticCurveCrypto(type: Copy) {
-    from file(System.getenv("GRAALVM_HOME") + "/jre/lib/")
+    from file(System.getenv("JAVA_HOME") + "/jre/lib/")
     into "$buildDir"
     include "libsunec.*"
 }
 
-graalNativeImage.finalizedBy copyEllipticCurveCrypto
-
-task copyDylibs(type: Copy) {
-    from file(System.getenv("GRAALVM_HOME") + "/jre/lib/")
-    into "$buildDir"
-    include "**/*.dylib"
-}
+graalNativeImage.finalizedBy copyJsound, copyEllipticCurveCrypto
