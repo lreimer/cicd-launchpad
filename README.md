@@ -8,7 +8,9 @@ Visualise and launch CI/CD jobs using a Novation Launchpad Mini MK2.
 $ ./gradlew clean ass
 
 $ docker run -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts
+
 $ ./gradlew run --args="-f src/test/resources/jenkins-jobs.json"
+$ ./gradlew run --args="-u admin -p admin -f src/test/resources/jenkins-jobs.json"
 ```
 
 ## Maintainer

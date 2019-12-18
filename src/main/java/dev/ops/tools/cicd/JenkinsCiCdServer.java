@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -25,6 +26,8 @@ public class JenkinsCiCdServer implements CiCdServer {
     private static final Logger LOGGER = LoggerFactory.getLogger(JenkinsCiCdServer.class);
 
     private final File configFile;
+    private final Optional<String> username;
+    private final Optional<String> password;
     private final long time;
     private final TimeUnit unit;
     private final Set<Consumer<CiCdJob>> callbacks;
@@ -34,8 +37,10 @@ public class JenkinsCiCdServer implements CiCdServer {
     private JenkinsServer jenkins;
 
 
-    public JenkinsCiCdServer(File configFile, long time, TimeUnit unit) {
+    public JenkinsCiCdServer(File configFile, String username, String password, long time, TimeUnit unit) {
         this.configFile = configFile;
+        this.username = Optional.ofNullable("".equals(username) ? null : username);
+        this.password = Optional.ofNullable("".equals(password) ? null : password);
         this.time = time;
         this.unit = unit;
         this.callbacks = new HashSet<>();
@@ -44,6 +49,9 @@ public class JenkinsCiCdServer implements CiCdServer {
     @Override
     public void initialize() {
         config = CiCdConfig.fromFile(configFile);
+        config.setUsername(username.orElse(config.getUsername()));
+        config.setPassword(password.orElse(config.getPassword()));
+
         LOGGER.info("Using {}", config);
 
         jenkins = new JenkinsServer(config.getURI(), config.getUsername(), config.getPassword());

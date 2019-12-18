@@ -22,11 +22,11 @@ class CiCdLaunchpad implements Runnable {
     @Option(names = {"-t", "--time"}, defaultValue = "10", description = "the refresh time in seconds")
     private long time = 10;
 
-    @Option(names = {"-u", "--user"}, description = "the user name")
-    private String user;
+    @Option(names = {"-u", "--username"}, defaultValue = "", description = "the user name")
+    private String username;
 
-    @Option(names = {"-p", "--password"}, arity = "0..1", description = "the passphrase", interactive = true)
-    private char[] password;
+    @Option(names = {"-p", "--password"}, defaultValue = "", arity = "0..1", description = "the passphrase", interactive = true)
+    private String password;
 
     @Option(names = "-j", defaultValue = "true", description = "use Jenkins as CI/CD server")
     private boolean jenkins = true;
@@ -42,7 +42,7 @@ class CiCdLaunchpad implements Runnable {
     public void run() {
         LOGGER.info("Running CI/CD Launchpad ...");
 
-        CiCdServer ciCdServer = CiCdServer.jenkins(config, time, TimeUnit.SECONDS);
+        CiCdServer ciCdServer = CiCdServer.jenkins(config, username, password, time, TimeUnit.SECONDS);
         MidiSystemHandler midiSystem = new MidiSystemHandler();
         midiSystem.infos();
 
