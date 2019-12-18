@@ -110,6 +110,7 @@ task graalNativeImage(description: 'Generate native image with GraalVM', depends
             // '--static',
             '--enable-http',
             '--enable-https',
+            '--force-fallback',
             'dev.ops.tools.CiCdLaunchpad',
             'cicd-launchpad'
     ]
@@ -127,4 +128,5 @@ task copyEllipticCurveCrypto(type: Copy) {
     include "libsunec.*"
 }
 
-graalNativeImage.finalizedBy copyJsound, copyEllipticCurveCrypto
+// not required, we are building a fallback image
+// graalNativeImage.finalizedBy copyJsound, copyEllipticCurveCrypto
