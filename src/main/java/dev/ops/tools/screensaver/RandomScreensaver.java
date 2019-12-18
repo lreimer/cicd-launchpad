@@ -2,6 +2,8 @@ package dev.ops.tools.screensaver;
 
 import dev.ops.tools.midi.LaunchpadColor;
 import dev.ops.tools.midi.LaunchpadDevice;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,8 @@ import java.util.concurrent.TimeUnit;
  * Screensaver implementation that randomly cycles through the colors.
  */
 public class RandomScreensaver implements Screensaver {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RandomScreensaver.class);
 
     private final LaunchpadDevice launchpad;
     private final long time;
@@ -31,6 +35,8 @@ public class RandomScreensaver implements Screensaver {
 
     @Override
     public void start() {
+        LOGGER.info("Starting Random screensaver ...");
+
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 final int row = i;

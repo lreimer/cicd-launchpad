@@ -4,6 +4,8 @@ import dev.ops.tools.midi.LaunchpadColor;
 import dev.ops.tools.midi.LaunchpadDevice;
 import org.apache.commons.collections4.iterators.LoopingIterator;
 import org.apache.commons.collections4.queue.CircularFifoQueue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +18,8 @@ import java.util.concurrent.TimeUnit;
  * Screensaver implementation that scrolls like a wave.
  */
 public class WaveScreensaver implements Screensaver {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(WaveScreensaver.class);
 
     private final LaunchpadDevice launchpad;
     private final long time;
@@ -49,6 +53,8 @@ public class WaveScreensaver implements Screensaver {
 
     @Override
     public void start() {
+        LOGGER.info("Starting Wave screensaver ...");
+
         launchpad.reset();
         for (int i = 0; i < 8; i++) {
             final int row = i;
