@@ -36,4 +36,19 @@ public interface CiCdServer {
     static CiCdServer jenkins(File config, long time, TimeUnit timeUnit) {
         return new JenkinsCiCdServer(config, time, timeUnit);
     }
+
+    /**
+     * Get the CiCdJob for given index.
+     *
+     * @param index the index of the job
+     * @return the CiCdJob or NULL if not found
+     */
+    CiCdJob getJob(int index);
+
+    /**
+     * Trigger a build for the given CiCdJob.
+     *
+     * @param job the job, may be NULL
+     */
+    void build(CiCdJob job);
 }

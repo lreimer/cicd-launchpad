@@ -101,4 +101,29 @@ public class JenkinsCiCdServer implements CiCdServer {
         executorService.shutdown();
         jenkins.close();
     }
+
+    @Override
+    public CiCdJob getJob(int index) {
+        if (index >= config.getJobs().size()) {
+            return null;
+        } else {
+            return config.getJobs().get(index);
+        }
+    }
+
+    @Override
+    public void build(CiCdJob job) {
+        if (job == null) {
+            return;
+        }
+
+        LOGGER.info("Trigger build for Job {}", job.getName());
+
+        try {
+            JobWithDetails jobWithDetails = jenkins.getJob(job.getName());
+            jobWithDetails.build(true);
+        } catch (IOException e) {
+            LOGGER.warn("Unable to trigger build for Job {}", job.getName());
+        }
+    }
 }

@@ -7,6 +7,8 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Abstract Launchpad MIDI device implementation to encapsulate the usage of Javax Sound Midi.
@@ -16,6 +18,8 @@ public abstract class LaunchpadDevice implements Receiver {
     private static final Logger LOGGER = LoggerFactory.getLogger(LaunchpadDevice.class);
 
     private Receiver receiver;
+
+    protected static final List<Integer> A_H_BUTTONS = Arrays.asList(8, 24, 40, 56, 72, 88, 104, 120);
 
     public void setReceiver(Receiver receiver) {
         this.receiver = receiver;

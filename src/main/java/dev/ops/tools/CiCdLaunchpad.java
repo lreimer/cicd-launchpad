@@ -19,8 +19,8 @@ class CiCdLaunchpad implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CiCdLaunchpad.class);
 
-    @Option(names = {"-t", "--time"}, defaultValue = "5", description = "the refresh time in seconds")
-    private long time = 5;
+    @Option(names = {"-t", "--time"}, defaultValue = "10", description = "the refresh time in seconds")
+    private long time = 10;
 
     @Option(names = {"-u", "--user"}, description = "the user name")
     private String user;
