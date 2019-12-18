@@ -49,10 +49,10 @@ public class CiCdLaunchpadController extends LaunchpadDevice {
 
     @Override
     protected void handle(int command, int data1, int data2) {
-        LOGGER.info("Received MIDI event[command={},data1={},data2={}]", command, data1, data2);
-
         if (command == 176 && data2 == 127) {
             // a 1-8 button has been pressed
+            LOGGER.info("Received MIDI event for 1-8 button [command={},data1={},data2={}]", command, data1, data2);
+
             int index = data1 - 104;
             if (index >= screensavers.size()) {
                 return;
@@ -68,6 +68,8 @@ public class CiCdLaunchpadController extends LaunchpadDevice {
             screensaver.toogle();
         } else if (command == 144 && data2 == 127) {
             // a A-H button has been pressed
+            LOGGER.info("Received MIDI event for A-H button [command={},data1={},data2={}]", command, data1, data2);
+
             int row = A_H_BUTTONS.indexOf(data1);
             CiCdJob job = ciCdServer.getJob(row);
             ciCdServer.build(job);
