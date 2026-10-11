@@ -8,7 +8,8 @@ Use the Gradle wrapper:
 ./gradlew clean build
 ./gradlew test
 ./gradlew test --tests 'dev.ops.tools.ExampleTest'
-./gradlew run --args='-f src/test/resources/jenkins-jobs.json'
+./gradlew run --args='-f src/test/resources/github-actions-jobs.json'
+./gradlew run --args='-j -f src/test/resources/jenkins-jobs.json'
 ```
 
 Tests use JUnit Jupiter and include local HTTP stubs for Jenkins and the GitHub Actions API; Jenkins, GitHub and MIDI hardware are not required. No lint task or lint plugin is configured. The wrapper pins Gradle 8.14.6 and the project uses a Java 21 toolchain with `--release 21`. Set `JAVA_HOME` to a JDK 21 installation.
@@ -21,7 +22,7 @@ This is a Java CLI application that connects Jenkins job or GitHub Actions workf
 
 ## Repository-specific conventions
 
-- The Jenkins JSON config has `url`, `username`, `password`, and a `jobs` array. The GitHub Actions config has `repository` (`owner/repo`), optional `url` (API base, default `https://api.github.com`), optional `branch`, and a `jobs` array whose names are workflow file names or IDs; its token comes only from the `GITHUB_TOKEN` environment variable. Each job has a `name` and a `row` from 0 through 7; at most eight jobs are supported. CLI username/password options override the values in the file.
+- The Jenkins JSON config has `url`, `username`, `password`, and a `jobs` array. The GitHub Actions config has `repository` (`owner/repo`), optional `url` (API base, default `https://api.github.com`), optional `branch`, and a `jobs` array whose names are workflow file names or IDs; its token comes only from the `GITHUB_TOKEN` environment variable. Each job has a `name` and a `row` from 0 through 7; at most eight jobs are supported. CLI username/password options override the values in the Jenkins file.
 - Keep job-result rendering aligned with `LaunchpadColor.forResult`; Jenkins results other than `SUCCESS`, `UNSTABLE`, and `FAILURE` currently render as unlit.
-- New CI/CD server implementations should follow `CiCdServer`'s lifecycle and callback contract; the CLI selects Jenkins by default and GitHub Actions with `-g/--github`.
+- New CI/CD server implementations should follow `CiCdServer`'s lifecycle and callback contract; the CLI selects GitHub Actions by default (or with `-g/--github`) and Jenkins with `-j/--jenkins`; the two flags are mutually exclusive.
 - Native-image configuration lives in `src/main/resources/META-INF/native-image`. Update its reflection, JNI, proxy, or resource metadata when corresponding runtime/native-image requirements change.

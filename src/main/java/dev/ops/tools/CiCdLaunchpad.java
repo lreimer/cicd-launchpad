@@ -28,12 +28,17 @@ class CiCdLaunchpad implements Runnable {
     @Option(names = {"-p", "--password"}, defaultValue = "", arity = "0..1", description = "the passphrase", interactive = true)
     private String password;
 
-    @Option(names = "-j", defaultValue = "true", description = "use Jenkins as CI/CD server")
-    private boolean jenkins = true;
+    @CommandLine.ArgGroup(exclusive = true)
+    private ServerSelection server = new ServerSelection();
 
-    @Option(names = {"-g", "--github"}, description = "use GitHub Actions as CI/CD server, "
-            + "authenticated via the GITHUB_TOKEN environment variable")
-    private boolean github;
+    static class ServerSelection {
+        @Option(names = {"-g", "--github"}, description = "use GitHub Actions as CI/CD server (default), "
+                + "authenticated via the GITHUB_TOKEN environment variable")
+        boolean github;
+
+        @Option(names = {"-j", "--jenkins"}, description = "use Jenkins as CI/CD server")
+        boolean jenkins;
+    }
 
     @Option(names = {"-f", "--file"}, paramLabel = "JSON_CONFIG", description = "the configuration file", required = true)
     private File config;
@@ -45,13 +50,17 @@ class CiCdLaunchpad implements Runnable {
         }
     }
 
+    boolean useJenkins() {
+        return server != null && server.jenkins;
+    }
+
     @Override
     public void run() {
         LOGGER.info("Running CI/CD Launchpad ...");
 
-        CiCdServer ciCdServer = github
-                ? CiCdServer.github(config, time, TimeUnit.SECONDS)
-                : CiCdServer.jenkins(config, username, password, time, TimeUnit.SECONDS);
+        CiCdServer ciCdServer = useJenkins()
+                ? CiCdServer.jenkins(config, username, password, time, TimeUnit.SECONDS)
+                : CiCdServer.github(config, time, TimeUnit.SECONDS);
         MidiSystemHandler midiSystem = new MidiSystemHandler();
         midiSystem.infos();
 

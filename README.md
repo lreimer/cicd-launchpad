@@ -12,24 +12,19 @@ Compilation and application execution use the Java 21 toolchain.
 $ ./gradlew clean build
 $ ./gradlew test
 $ ./gradlew run --args="--help"
-
-$ docker run -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts
-
-$ ./gradlew run --args="-f src/test/resources/jenkins-jobs.json"
-$ ./gradlew run --args="-u admin -p admin -f src/test/resources/jenkins-jobs.json"
 ```
 
-### GitHub Actions
+### GitHub Actions (default)
 
-Use `-g` (or `--github`) to visualise GitHub Actions workflows instead of Jenkins
-jobs. Authentication uses a GitHub personal access token read from the
+GitHub Actions is the default CI/CD server; `-g` (or `--github`) selects it
+explicitly. Authentication uses a GitHub personal access token read from the
 `GITHUB_TOKEN` environment variable. A fine-grained token needs the repository
 permission *Actions: Read and write* (read-only suffices if you do not trigger
 builds); a classic token needs the `repo` (or `public_repo`) and `workflow` scopes.
 
 ```bash
 $ export GITHUB_TOKEN=<your personal access token>
-$ ./gradlew run --args="-g -f src/test/resources/github-actions-jobs.json"
+$ ./gradlew run --args="-f src/test/resources/github-actions-jobs.json"
 ```
 
 The configuration names the repository and the workflows to show. Job names are
@@ -52,6 +47,18 @@ green, failed, timed-out or startup-failure runs are red, and queued, running,
 cancelled or skipped runs are unlit. Pressing a row's button triggers the
 workflow through a `workflow_dispatch` event, so the workflow must declare the
 `workflow_dispatch` trigger.
+
+### Jenkins
+
+Use `-j` (or `--jenkins`) to visualise Jenkins jobs instead. `-g` and `-j` are
+mutually exclusive. The username and password options only apply to Jenkins.
+
+```bash
+$ docker run -p 8080:8080 -p 50000:50000 jenkins/jenkins:lts
+
+$ ./gradlew run --args="-j -f src/test/resources/jenkins-jobs.json"
+$ ./gradlew run --args="-j -u admin -p admin -f src/test/resources/jenkins-jobs.json"
+```
 
 `build/distributions` contains the application ZIP and TAR distributions. They
 require Java 21 to run. Runtime dependency JARs are also copied to
@@ -87,7 +94,8 @@ $ native-image --version
 Then collect metadata and build:
 
 ```bash
-$ ./gradlew run -PnativeImageAgent --args="-f src/test/resources/jenkins-jobs.json"
+$ ./gradlew run -PnativeImageAgent --args="-f src/test/resources/github-actions-jobs.json"
+$ ./gradlew run -PnativeImageAgent --args="-j -f src/test/resources/jenkins-jobs.json"
 $ ./gradlew reflectionConfigGenerator
 $ ./gradlew graalNativeImage
 ```

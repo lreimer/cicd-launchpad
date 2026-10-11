@@ -36,6 +36,28 @@ class CiCdLaunchpadTest {
 
         result = new CommandLine(new CiCdLaunchpad()).parseArgs("-g", "-f", "github.json");
         assertTrue(result.<Boolean>matchedOptionValue("--github", false));
+
+        result = new CommandLine(new CiCdLaunchpad()).parseArgs("-j", "-f", "jenkins.json");
+        assertTrue(result.<Boolean>matchedOptionValue("--jenkins", false));
+    }
+
+    @Test
+    void selectsGitHubActionsByDefaultAndJenkinsOnRequest() {
+        CiCdLaunchpad launchpad = new CiCdLaunchpad();
+        new CommandLine(launchpad).parseArgs("-f", "jobs.json");
+        assertFalse(launchpad.useJenkins());
+
+        launchpad = new CiCdLaunchpad();
+        new CommandLine(launchpad).parseArgs("-j", "-f", "jobs.json");
+        assertTrue(launchpad.useJenkins());
+    }
+
+    @Test
+    void rejectsGitHubAndJenkinsTogether() {
+        CommandLine command = new CommandLine(new CiCdLaunchpad());
+        command.setErr(new PrintWriter(new StringWriter()));
+
+        assertEquals(CommandLine.ExitCode.USAGE, command.execute("-g", "-j", "-f", "jobs.json"));
     }
 
     @Test
