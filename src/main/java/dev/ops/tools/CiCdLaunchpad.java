@@ -14,13 +14,13 @@ import java.util.concurrent.TimeUnit;
 /**
  * Main application for the CI/CD Launchpad.
  */
-@Command(version = "CI/CD Launchpad 1.0", mixinStandardHelpOptions = true)
+@Command(version = "CI/CD Launchpad 2.0", mixinStandardHelpOptions = true)
 class CiCdLaunchpad implements Runnable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CiCdLaunchpad.class);
 
-    @Option(names = {"-t", "--time"}, defaultValue = "10", description = "the refresh time in seconds")
-    private long time = 10;
+    @Option(names = {"-t", "--time"}, defaultValue = "3", description = "the refresh time in seconds")
+    private long time = 3;
 
     @Option(names = {"-u", "--username"}, defaultValue = "", description = "the user name")
     private String username;
