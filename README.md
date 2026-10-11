@@ -19,6 +19,40 @@ $ ./gradlew run --args="-f src/test/resources/jenkins-jobs.json"
 $ ./gradlew run --args="-u admin -p admin -f src/test/resources/jenkins-jobs.json"
 ```
 
+### GitHub Actions
+
+Use `-g` (or `--github`) to visualise GitHub Actions workflows instead of Jenkins
+jobs. Authentication uses a GitHub personal access token read from the
+`GITHUB_TOKEN` environment variable. A fine-grained token needs the repository
+permission *Actions: Read and write* (read-only suffices if you do not trigger
+builds); a classic token needs the `repo` (or `public_repo`) and `workflow` scopes.
+
+```bash
+$ export GITHUB_TOKEN=<your personal access token>
+$ ./gradlew run --args="-g -f src/test/resources/github-actions-jobs.json"
+```
+
+The configuration names the repository and the workflows to show. Job names are
+workflow file names (or workflow IDs); `url` defaults to `https://api.github.com`
+and may point to a GitHub Enterprise API. If `branch` is set, only runs for that
+branch are shown and builds are dispatched on it; otherwise all runs are shown and
+builds use the repository's default branch.
+
+```json
+{
+  "url": "https://api.github.com",
+  "repository": "lreimer/cicd-launchpad",
+  "branch": "master",
+  "jobs": [ { "row": 0, "name": "gradle.yml" } ]
+}
+```
+
+Each row shows the latest eight workflow runs, newest first: successful runs are
+green, failed, timed-out or startup-failure runs are red, and queued, running,
+cancelled or skipped runs are unlit. Pressing a row's button triggers the
+workflow through a `workflow_dispatch` event, so the workflow must declare the
+`workflow_dispatch` trigger.
+
 `build/distributions` contains the application ZIP and TAR distributions. They
 require Java 21 to run. Runtime dependency JARs are also copied to
 `build/runtime-libs`; picocli's code generator is a build-only dependency and is
@@ -33,8 +67,8 @@ and Commons Collections 3 dependencies remain necessary; fully removing them
 requires replacing the Jenkins client. ORO also remains at its latest release.
 
 Tests cover CLI parsing, JSON configuration, Jenkins polling/build triggering
-against a local HTTP stub, and wave rendering without requiring Jenkins or MIDI
-hardware.
+and GitHub Actions polling/dispatching against local HTTP stubs, and wave
+rendering without requiring Jenkins, GitHub or MIDI hardware.
 
 ### Optional GraalVM native image
 

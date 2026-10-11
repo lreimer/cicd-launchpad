@@ -33,6 +33,9 @@ class CiCdLaunchpadTest {
         assertEquals("user", result.matchedOptionValue("-u", null));
         assertEquals("token", result.matchedOptionValue("-p", null));
         assertEquals("jobs.json", result.matchedOptionValue("-f", null).toString());
+
+        result = new CommandLine(new CiCdLaunchpad()).parseArgs("-g", "-f", "github.json");
+        assertTrue(result.<Boolean>matchedOptionValue("--github", false));
     }
 
     @Test

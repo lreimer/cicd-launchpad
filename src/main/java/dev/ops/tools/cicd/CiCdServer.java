@@ -40,6 +40,20 @@ public interface CiCdServer {
     }
 
     /**
+     * Factory method for the GitHub Actions CI/CD server. The GitHub personal access token
+     * is read from the {@value GitHubActionsCiCdServer#TOKEN_ENV_VARIABLE} environment variable.
+     *
+     * @param config   the JSON config file
+     * @param time     the time to check for changes
+     * @param timeUnit the time unit
+     * @return a GitHub Actions CI/CD server instance
+     */
+    static CiCdServer github(File config, long time, TimeUnit timeUnit) {
+        String token = System.getenv(GitHubActionsCiCdServer.TOKEN_ENV_VARIABLE);
+        return new GitHubActionsCiCdServer(config, token, time, timeUnit);
+    }
+
+    /**
      * Get the CiCdJob for given index.
      *
      * @param index the index of the job

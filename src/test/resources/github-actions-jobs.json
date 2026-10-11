@@ -1,0 +1,11 @@
+{
+  "url": "https://api.github.com",
+  "repository": "lreimer/cicd-launchpad",
+  "branch": "master",
+  "jobs": [
+    {
+      "row": 0,
+      "name": "gradle.yml"
+    }
+  ]
+}

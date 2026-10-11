@@ -31,6 +31,10 @@ class CiCdLaunchpad implements Runnable {
     @Option(names = "-j", defaultValue = "true", description = "use Jenkins as CI/CD server")
     private boolean jenkins = true;
 
+    @Option(names = {"-g", "--github"}, description = "use GitHub Actions as CI/CD server, "
+            + "authenticated via the GITHUB_TOKEN environment variable")
+    private boolean github;
+
     @Option(names = {"-f", "--file"}, paramLabel = "JSON_CONFIG", description = "the configuration file", required = true)
     private File config;
 
@@ -45,7 +49,9 @@ class CiCdLaunchpad implements Runnable {
     public void run() {
         LOGGER.info("Running CI/CD Launchpad ...");
 
-        CiCdServer ciCdServer = CiCdServer.jenkins(config, username, password, time, TimeUnit.SECONDS);
+        CiCdServer ciCdServer = github
+                ? CiCdServer.github(config, time, TimeUnit.SECONDS)
+                : CiCdServer.jenkins(config, username, password, time, TimeUnit.SECONDS);
         MidiSystemHandler midiSystem = new MidiSystemHandler();
         midiSystem.infos();
 

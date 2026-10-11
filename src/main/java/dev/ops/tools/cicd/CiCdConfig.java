@@ -20,6 +20,8 @@ public class CiCdConfig {
     private String url;
     private String username;
     private String password;
+    private String repository;
+    private String branch;
     private List<CiCdJob> jobs = new ArrayList<>(8);
 
     public String getUrl() {
@@ -31,6 +33,9 @@ public class CiCdConfig {
     }
 
     public URI getURI() {
+        if (url == null) {
+            throw new IllegalArgumentException("Missing CI/CD server URL.");
+        }
         try {
             return new URI(url);
         } catch (URISyntaxException e) {
@@ -54,6 +59,22 @@ public class CiCdConfig {
         this.password = password;
     }
 
+    public String getRepository() {
+        return repository;
+    }
+
+    public void setRepository(String repository) {
+        this.repository = repository;
+    }
+
+    public String getBranch() {
+        return branch;
+    }
+
+    public void setBranch(String branch) {
+        this.branch = branch;
+    }
+
     public List<CiCdJob> getJobs() {
         return jobs;
     }
@@ -70,9 +91,11 @@ public class CiCdConfig {
         try (JsonReader reader = Json.createReader(new FileInputStream(file))) {
             JsonObject configObject = reader.readObject();
 
-            config.setUrl(configObject.getString("url"));
-            config.setUsername(configObject.getString("username"));
-            config.setPassword(configObject.getString("password"));
+            config.setUrl(configObject.getString("url", null));
+            config.setUsername(configObject.getString("username", null));
+            config.setPassword(configObject.getString("password", null));
+            config.setRepository(configObject.getString("repository", null));
+            config.setBranch(configObject.getString("branch", null));
 
             config.setJobs(CiCdJob.fromJson(configObject));
         } catch (IOException e) {
@@ -87,6 +110,8 @@ public class CiCdConfig {
                 .add("url='" + url + "'")
                 .add("username='" + username + "'")
                 .add("password='" + password + "'")
+                .add("repository='" + repository + "'")
+                .add("branch='" + branch + "'")
                 .add("jobs=" + jobs)
                 .toString();
     }
