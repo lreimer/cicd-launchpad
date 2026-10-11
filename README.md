@@ -113,23 +113,6 @@ every 175 ms. Press the active screensaver's button again to stop it and reset
 the Launchpad; selecting the other screensaver stops the current one first.
 Numbered buttons 3 through 8 do not have screensavers assigned.
 
-`build/distributions` contains the application ZIP and TAR distributions. They
-require Java 21 to run. Runtime dependency JARs are also copied to
-`build/runtime-libs`; picocli's code generator is a build-only dependency and is
-not shipped with the application.
-
-Dependencies are resolved from Maven Central. JSON configuration uses Jakarta
-JSON-P with Parsson, logging uses SLF4J 2, and the wave screensaver uses Commons
-Collections 4. The Jenkins client remains at 0.3.8 (its latest published version),
-with compatible updates to Jackson 2, Guava, Apache HttpComponents 4, dom4j,
-Jaxen, and its Commons dependencies. Its legacy JSON-lib, EZMorph, Commons Lang 2,
-and Commons Collections 3 dependencies remain necessary; fully removing them
-requires replacing the Jenkins client. ORO also remains at its latest release.
-
-Tests cover CLI parsing, JSON configuration, Jenkins polling/build triggering
-and GitHub Actions polling/dispatching against local HTTP stubs, and wave
-rendering without requiring Jenkins, GitHub or MIDI hardware.
-
 ### Optional GraalVM native image
 
 Normal JVM execution does not require GraalVM. To collect native-image metadata,
