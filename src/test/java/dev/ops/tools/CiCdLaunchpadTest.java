@@ -20,7 +20,7 @@ class CiCdLaunchpadTest {
         assertTrue(output.toString().contains("JSON_CONFIG"));
         output.getBuffer().setLength(0);
         assertEquals(0, command.execute("--version"));
-        assertTrue(output.toString().contains("CI/CD Launchpad 1.0"));
+        assertTrue(output.toString().contains("CI/CD Launchpad 2.0"));
     }
 
     @Test
