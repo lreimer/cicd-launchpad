@@ -103,6 +103,16 @@ $ ./gradlew run --args="-j -f src/test/resources/jenkins-jobs.json"
 $ ./gradlew run --args="-j -u admin -p admin -f src/test/resources/jenkins-jobs.json"
 ```
 
+### Screensavers
+
+Press the Launchpad's numbered buttons to toggle a screensaver. Button **1**
+starts the random screensaver, which changes every pad in the 8-by-8 grid to a
+random color every 250 ms. Button **2** starts the wave screensaver, which
+scrolls a sequence of red, amber, yellow, green, and unlit pads across each row
+every 175 ms. Press the active screensaver's button again to stop it and reset
+the Launchpad; selecting the other screensaver stops the current one first.
+Numbered buttons 3 through 8 do not have screensavers assigned.
+
 `build/distributions` contains the application ZIP and TAR distributions. They
 require Java 21 to run. Runtime dependency JARs are also copied to
 `build/runtime-libs`; picocli's code generator is a build-only dependency and is
