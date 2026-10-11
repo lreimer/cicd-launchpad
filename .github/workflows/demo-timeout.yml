@@ -13,4 +13,4 @@ jobs:
       - name: Exceed the one-minute job timeout
         run: |
           echo "Waiting for an intentional timeout - blinking green, then bright red once completed."
-          sleep 120
+          sleep 60
