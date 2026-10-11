@@ -35,7 +35,10 @@ class CiCdLaunchpad implements Runnable {
     private File config;
 
     public static void main(String[] args) {
-        CommandLine.run(new CiCdLaunchpad(), args);
+        int exitCode = new CommandLine(new CiCdLaunchpad()).execute(args);
+        if (exitCode != 0) {
+            System.exit(exitCode);
+        }
     }
 
     @Override

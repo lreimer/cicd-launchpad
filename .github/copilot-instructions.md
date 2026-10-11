@@ -11,7 +11,7 @@ Use the Gradle wrapper:
 ./gradlew run --args='-f src/test/resources/jenkins-jobs.json'
 ```
 
-There are currently no test classes or test-framework dependencies; the filtered test command shows how to run one after tests are added. No lint task or lint plugin is configured. The wrapper pins Gradle 5.2.1 and the project targets Java 8; this older Gradle version may fail on newer JDKs.
+Tests use JUnit Jupiter and include a local HTTP stub for Jenkins; Jenkins and MIDI hardware are not required. No lint task or lint plugin is configured. The wrapper pins Gradle 8.14.6 and the project uses a Java 21 toolchain with `--release 21`. Set `JAVA_HOME` to a JDK 21 installation.
 
 ## Architecture
 

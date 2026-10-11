@@ -7,7 +7,10 @@
       "pattern": "org/apache/http/client/version.properties"
     },
     {
-      "pattern": "org/slf4j/impl/StaticLoggerBinder.class"
+      "pattern": "META-INF/services/org.slf4j.spi.SLF4JServiceProvider"
+    },
+    {
+      "pattern": "META-INF/services/jakarta.json.spi.JsonProvider"
     }
   ]
 }

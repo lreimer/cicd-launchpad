@@ -1,5 +1,13 @@
 [
   {
+    "name": "org.eclipse.parsson.JsonProviderImpl",
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.slf4j.simple.SimpleServiceProvider",
+    "allDeclaredConstructors": true
+  },
+  {
     "name": "com.offbytwo.jenkins.client.JenkinsHttpConnection",
     "allDeclaredMethods": true,
     "allDeclaredConstructors": true

@@ -1,50 +1,93 @@
 plugins {
     id 'java'
     id 'application'
-    id 'groovy'
 }
 
 repositories {
-    jcenter()
+    mavenCentral()
 }
 
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 21
+}
+
+configurations {
+    picocliCodegen
+}
+
+configurations.configureEach {
+    resolutionStrategy.dependencySubstitution {
+        substitute module('dom4j:dom4j') using module('org.dom4j:dom4j:2.2.0')
+    }
+}
 
 dependencies {
-    implementation 'info.picocli:picocli:3.9.6'
+    implementation 'info.picocli:picocli:4.7.7'
+    implementation 'org.slf4j:slf4j-api:2.0.20'
+    implementation 'org.apache.commons:commons-collections4:4.6.0'
+    implementation 'com.offbytwo.jenkins:jenkins-client:0.3.8'
+    implementation 'jakarta.json:jakarta.json-api:2.1.3'
 
-    compile 'org.slf4j:slf4j-api:1.7.26'
-    compile 'commons-collections:commons-collections:3.2.2'
+    // The Jenkins client has no newer release; keep its transitives on compatible release lines.
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.22.3')
+    constraints {
+        implementation 'com.google.guava:guava:33.7.2-jre'
+        implementation 'org.apache.httpcomponents:httpclient:4.5.14'
+        implementation 'org.apache.httpcomponents:httpcore:4.4.16'
+        implementation 'org.apache.httpcomponents:httpmime:4.5.14'
+        implementation 'commons-io:commons-io:2.22.0'
+        implementation 'commons-beanutils:commons-beanutils:1.11.0'
+        implementation 'commons-codec:commons-codec:1.22.1'
+        implementation 'commons-logging:commons-logging:1.4.0'
+        implementation 'jaxen:jaxen:2.0.6'
+    }
 
-    compile 'com.offbytwo.jenkins:jenkins-client:0.3.8'
-    compile 'org.glassfish:jakarta.json:1.1.6'
+    runtimeOnly 'org.eclipse.parsson:parsson:1.1.9'
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.20'
+    runtimeOnly 'org.fusesource.jansi:jansi:2.4.3'
+    runtimeOnly 'oro:oro:2.0.8'
 
-    // compileOnly ':svm:19.2.1'
-    // compileOnly 'org.graalvm.nativeimage:svm:19.3.0'
-
-    runtime 'org.slf4j:slf4j-simple:1.7.26'
-    runtime 'info.picocli:picocli-codegen:3.9.6'
-    runtime 'org.fusesource.jansi:jansi:1.18'
-    runtime 'oro:oro:2.0.8'
+    picocliCodegen 'info.picocli:picocli-codegen:4.7.7'
+    testImplementation platform('org.junit:junit-bom:6.1.3')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 application {
-    mainClassName = 'dev.ops.tools.CiCdLaunchpad'
-    applicationDefaultJvmArgs = ['-agentlib:native-image-agent=config-merge-dir=build/resources/main/META-INF/native-image']
+    mainClass = 'dev.ops.tools.CiCdLaunchpad'
 }
 
-task copyRuntimeLibs(type: Copy) {
-    into "$buildDir/libs"
+tasks.named('run', JavaExec) {
+    if (providers.gradleProperty('nativeImageAgent').isPresent()) {
+        jvmArgs '-agentlib:native-image-agent=config-merge-dir=build/resources/main/META-INF/native-image'
+    }
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+}
+
+tasks.register('copyRuntimeLibs', Sync) {
+    into layout.buildDirectory.dir('runtime-libs')
     from sourceSets.main.runtimeClasspath
     include "*.jar"
 }
 
-assemble.finalizedBy copyRuntimeLibs
+tasks.named('assemble') {
+    finalizedBy 'copyRuntimeLibs'
+}
 
-task reflectionConfigGenerator(description: 'Generate reflection config', dependsOn: 'assemble', type: JavaExec) {
-    main = 'picocli.codegen.aot.graalvm.ReflectionConfigGenerator'
-    classpath = sourceSets.main.runtimeClasspath
+tasks.register('reflectionConfigGenerator', JavaExec) {
+    description = 'Generate reflection config'
+    dependsOn 'classes'
+    mainClass = 'picocli.codegen.aot.graalvm.ReflectionConfigGenerator'
+    classpath = sourceSets.main.runtimeClasspath + configurations.picocliCodegen
     args = ['dev.ops.tools.CiCdLaunchpad', '--output', 'build/reflect.json']
 }
 
@@ -52,7 +95,8 @@ task reflectionConfigGenerator(description: 'Generate reflection config', depend
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 
-task extendReflectJson {
+tasks.register('extendReflectJson') {
+    dependsOn 'reflectionConfigGenerator'
     doLast {
         def reflectJson = file("$buildDir/reflect.json")
         def json = new JsonSlurper().parseText(reflectJson.text)
@@ -89,44 +133,33 @@ def getFields(String name) {
     fields
 }
 
-reflectionConfigGenerator.finalizedBy extendReflectJson
-
-String getClasspath() {
-    'libs/' + file("$buildDir/libs").list()?.join(':libs/')
+tasks.named('reflectionConfigGenerator') {
+    finalizedBy 'extendReflectJson'
 }
 
-task graalNativeImage(description: 'Generate native image with GraalVM', dependsOn: 'reflectionConfigGenerator', type: Exec) {
+tasks.register('graalNativeImage', Exec) {
+    description = 'Generate native image with GraalVM 21'
+    dependsOn 'extendReflectJson'
     workingDir "$buildDir"
-    commandLine = [
+    doFirst {
+        commandLine = [
             'native-image',
-            '-cp', getClasspath(),
-            //'-H:ReflectionConfigurationFiles=extended-reflect.json',
-            '-H:+ReportUnsupportedElementsAtRuntime',
+            '-cp', sourceSets.main.runtimeClasspath.asPath,
+            '-H:ReflectionConfigurationFiles=extended-reflect.json',
             '-H:+ReportExceptionStackTraces',
             '-H:+AddAllCharsets',
-            '-H:+TraceClassInitialization',
-            '--initialize-at-run-time=com.sun.media.sound,org.fusesource.jansi.WindowsAnsiOutputStream',
-            '--no-server',
-            // '--static',
+            '--initialize-at-run-time=com.sun.media.sound',
             '--enable-http',
             '--enable-https',
-            '--force-fallback',
+            '--no-fallback',
             'dev.ops.tools.CiCdLaunchpad',
             'cicd-launchpad'
-    ]
+        ]
+    }
 }
 
-task copyJsound(type: Copy) {
-    from file(System.getenv("JAVA_HOME") + "/jre/lib/")
+tasks.register('copyJsound', Copy) {
+    from javaToolchains.launcherFor(java.toolchain).map { it.metadata.installationPath.dir('lib') }
     into "$buildDir"
     include "**/libjsound.*"
 }
-
-task copyEllipticCurveCrypto(type: Copy) {
-    from file(System.getenv("JAVA_HOME") + "/jre/lib/")
-    into "$buildDir"
-    include "libsunec.*"
-}
-
-// not required, we are building a fallback image
-// graalNativeImage.finalizedBy copyJsound, copyEllipticCurveCrypto
