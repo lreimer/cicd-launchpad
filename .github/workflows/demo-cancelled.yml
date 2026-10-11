@@ -1,0 +1,28 @@
+name: Launchpad demo - Cancelled
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  cancelled:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    permissions:
+      actions: write
+    steps:
+      - name: Cancel this workflow run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo "Requesting cancellation of this run - bright yellow."
+          curl --fail-with-body --silent --show-error \
+            --request POST \
+            --header "Authorization: Bearer ${GH_TOKEN}" \
+            --header "Accept: application/vnd.github+json" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}/cancel"
+          sleep 60
+          echo "::error::Run was not cancelled within 60 seconds."
+          exit 1

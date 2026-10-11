@@ -43,10 +43,53 @@ builds use the repository's default branch.
 ```
 
 Each row shows the latest eight workflow runs, newest first: successful runs are
-green, failed, timed-out or startup-failure runs are red, and queued, running,
-cancelled or skipped runs are unlit. Pressing a row's button triggers the
+steady green, failed, timed-out or startup-failure runs are red, and actively
+running jobs blink green (alternating bright green and off). Queued, waiting,
+cancelled or skipped runs are bright yellow. All other statuses also display
+bright yellow; pads without run history remain unlit.
+Pressing a row's button triggers the
 workflow through a `workflow_dispatch` event, so the workflow must declare the
 `workflow_dispatch` trigger.
+
+#### Launchpad demo workflows
+
+The example configuration in `src/test/resources/github-actions-jobs.json` keeps
+the real Gradle build on row 0 and maps seven dummy workflows to rows 1-7
+(zero-based row indices). These demos run **only on manual dispatch**, not on
+pushes or pull requests, so their intentional failures do not affect normal CI.
+They use shell commands without checkout or build dependencies.
+
+| Row | Workflow file | Behavior | Launchpad display |
+| --- | --- | --- | --- |
+| 1 | `demo-success.yml` | Immediately succeeds | Bright green |
+| 2 | `demo-failure.yml` | Immediately fails intentionally | Bright red |
+| 3 | `demo-skipped.yml` | Skips its only job | Bright yellow |
+| 4 | `demo-cancelled.yml` | Cancels its own run through the GitHub API | Bright yellow |
+| 5 | `demo-timeout.yml` | Sleeps past a one-minute job timeout | Blinking green while running, then bright red |
+| 6 | `demo-alternating.yml` | Odd run numbers fail; even run numbers succeed | Alternating red/green history after repeated dispatches |
+| 7 | `demo-running.yml` | Sleeps for 30 seconds, then succeeds | Blinking green while running, then steady bright green |
+
+Yellow represents pending runs and completed results other than success or
+failure. Running jobs use the Launchpad's native automatic flashing. A new run shifts older
+results along the row; dispatch each workflow eight times to fill its history.
+Re-running an existing run keeps its run number, so use new dispatches for the
+alternating demo.
+
+After these files are merged into the default branch (`master`), trigger them
+from the GitHub Actions UI, the Launchpad build buttons, or the GitHub CLI:
+
+```bash
+$ gh workflow run demo-success.yml --repo lreimer/cicd-launchpad --ref master
+$ gh workflow run demo-alternating.yml --repo lreimer/cicd-launchpad --ref master
+$ gh run list --repo lreimer/cicd-launchpad --workflow demo-alternating.yml
+```
+
+Dispatch the alternating workflow repeatedly to mix red and green pads. The
+running demo provides a short window to observe the blinking green in-progress
+display; runner queue time and the application's polling interval affect when
+changes appear. The cancellation demo alone grants its built-in `GITHUB_TOKEN`
+the `actions: write` permission; the other demos grant no token permissions.
+Repository or organization policies must allow that permission for self-cancellation.
 
 ### Jenkins
 

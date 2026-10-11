@@ -1,0 +1,16 @@
+name: Launchpad demo - Failure
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  failure:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Fail intentionally
+        run: |
+          echo "Intentional failure - bright red."
+          exit 1

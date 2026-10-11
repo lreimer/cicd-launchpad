@@ -129,7 +129,7 @@ public class GitHubActionsCiCdServer implements CiCdServer {
      */
     static String toResult(JsonObject run) {
         if (!"completed".equals(run.getString("status", null))) {
-            return "BUILDING";
+            return "in_progress".equals(run.getString("status", null)) ? "BUILDING" : "NOT_BUILT";
         }
         JsonValue conclusion = run.get("conclusion");
         if (conclusion == null || conclusion.getValueType() != JsonValue.ValueType.STRING) {

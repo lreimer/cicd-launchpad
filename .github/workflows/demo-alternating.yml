@@ -1,0 +1,21 @@
+name: Launchpad demo - Alternating results
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  alternating:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Alternate failure and success by run number
+        env:
+          RUN_NUMBER: ${{ github.run_number }}
+        run: |
+          if (( RUN_NUMBER % 2 == 1 )); then
+            echo "Odd run number - intentional failure, bright red."
+            exit 1
+          fi
+          echo "Even run number - success, bright green."

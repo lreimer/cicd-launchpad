@@ -1,0 +1,15 @@
+name: Launchpad demo - Skipped
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  skipped:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Never executed
+        run: echo "Skipped run - bright yellow."

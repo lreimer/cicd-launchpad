@@ -1,0 +1,16 @@
+name: Launchpad demo - Timeout
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  timeout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Exceed the one-minute job timeout
+        run: |
+          echo "Waiting for an intentional timeout - blinking green, then bright red once completed."
+          sleep 120

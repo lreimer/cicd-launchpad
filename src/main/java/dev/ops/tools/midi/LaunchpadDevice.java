@@ -23,6 +23,7 @@ public abstract class LaunchpadDevice implements Receiver {
 
     public void setReceiver(Receiver receiver) {
         this.receiver = receiver;
+        sendMessage(ShortMessage.CONTROL_CHANGE, 0, 40);
     }
 
     @Override
@@ -38,13 +39,24 @@ public abstract class LaunchpadDevice implements Receiver {
     @Override
     public void close() {
         reset();
+        sendMessage(ShortMessage.CONTROL_CHANGE, 0, 32);
         receiver.close();
     }
 
     public void square(int row, int col, LaunchpadColor color) {
+        square(row, col, color, false);
+    }
+
+    public void square(int row, int col, LaunchpadColor color, boolean flashing) {
         int data1 = (row * 16) + col;
+        // Static colors copy to both buffers; flashing colors clear the other buffer.
+        int velocity = (color.getValue() & 0x33) | (flashing ? 8 : 12);
+        sendMessage(ShortMessage.NOTE_ON, data1, velocity);
+    }
+
+    private void sendMessage(int command, int data1, int data2) {
         try {
-            receiver.send(new ShortMessage(144, 0, data1, color.getValue()), -1);
+            receiver.send(new ShortMessage(command, 0, data1, data2), -1);
         } catch (InvalidMidiDataException e) {
             LOGGER.warn("Could not send ShortMessage.", e);
         }

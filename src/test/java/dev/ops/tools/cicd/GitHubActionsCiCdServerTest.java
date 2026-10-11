@@ -1,6 +1,7 @@
 package dev.ops.tools.cicd;
 
 import com.sun.net.httpserver.HttpServer;
+import dev.ops.tools.midi.LaunchpadColor;
 import jakarta.json.Json;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -120,11 +121,31 @@ class GitHubActionsCiCdServerTest {
     }
 
     @Test
+    void displaysPendingAndOtherCompletedWorkflowRunsInYellow() {
+        var runs = List.of(
+                run("queued", null),
+                run("waiting", null),
+                run("completed", "cancelled"),
+                run("completed", "skipped"),
+                run("completed", "neutral"),
+                run("completed", "action_required"),
+                run("completed", "stale"),
+                run("completed", null));
+
+        for (var workflowRun : runs) {
+            assertEquals(LaunchpadColor.BRIGHT_YELLOW,
+                    LaunchpadColor.forResult(GitHubActionsCiCdServer.toResult(workflowRun)),
+                    () -> "Workflow run: " + workflowRun);
+        }
+    }
+
+    @Test
     void mapsWorkflowRunResults() {
         assertEquals("SUCCESS", GitHubActionsCiCdServer.toResult(run("completed", "success")));
         assertEquals("FAILURE", GitHubActionsCiCdServer.toResult(run("completed", "startup_failure")));
         assertEquals("NOT_BUILT", GitHubActionsCiCdServer.toResult(run("completed", "skipped")));
-        assertEquals("BUILDING", GitHubActionsCiCdServer.toResult(run("queued", null)));
+        assertEquals("BUILDING", GitHubActionsCiCdServer.toResult(run("in_progress", null)));
+        assertEquals("NOT_BUILT", GitHubActionsCiCdServer.toResult(run("queued", null)));
         assertEquals("NOT_BUILT", GitHubActionsCiCdServer.toResult(run("completed", null)));
     }
 

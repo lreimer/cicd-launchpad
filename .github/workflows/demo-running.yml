@@ -1,0 +1,16 @@
+name: Launchpad demo - Running then success
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  running:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Stay running briefly before succeeding
+        run: |
+          echo "Running for 30 seconds - blinking green until successful, then steady bright green."
+          sleep 30

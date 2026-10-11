@@ -6,6 +6,34 @@
     {
       "row": 0,
       "name": "gradle.yml"
+    },
+    {
+      "row": 1,
+      "name": "demo-success.yml"
+    },
+    {
+      "row": 2,
+      "name": "demo-failure.yml"
+    },
+    {
+      "row": 3,
+      "name": "demo-skipped.yml"
+    },
+    {
+      "row": 4,
+      "name": "demo-cancelled.yml"
+    },
+    {
+      "row": 5,
+      "name": "demo-timeout.yml"
+    },
+    {
+      "row": 6,
+      "name": "demo-alternating.yml"
+    },
+    {
+      "row": 7,
+      "name": "demo-running.yml"
     }
   ]
 }

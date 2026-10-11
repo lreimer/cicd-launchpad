@@ -31,6 +31,24 @@ class CiCdConfigTest {
     }
 
     @Test
+    void mapsGitHubActionsBuildAndDemosToAllEightRows() throws Exception {
+        CiCdConfig config = CiCdConfig.fromFile(
+                Path.of(getClass().getResource("/github-actions-jobs.json").toURI()).toFile());
+        String[] workflows = {
+                "gradle.yml", "demo-success.yml", "demo-failure.yml", "demo-skipped.yml",
+                "demo-cancelled.yml", "demo-timeout.yml", "demo-alternating.yml", "demo-running.yml"
+        };
+
+        assertEquals("lreimer/cicd-launchpad", config.getRepository());
+        assertEquals("master", config.getBranch());
+        assertEquals(workflows.length, config.getJobs().size());
+        for (int row = 0; row < workflows.length; row++) {
+            assertEquals(row, config.getJobs().get(row).getRow());
+            assertEquals(workflows[row], config.getJobs().get(row).getName());
+        }
+    }
+
+    @Test
     void preservesConfigurationLimits() {
         CiCdConfig config = new CiCdConfig();
         assertThrows(IllegalArgumentException.class,

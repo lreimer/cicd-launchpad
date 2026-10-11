@@ -1,0 +1,14 @@
+name: Launchpad demo - Success
+
+on:
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  success:
+    runs-on: ubuntu-latest
+    timeout-minutes: 1
+    steps:
+      - name: Succeed
+        run: echo "Successful run - bright green."

@@ -43,7 +43,11 @@ public class CiCdLaunchpadController extends LaunchpadDevice {
         clear(job.getRow());
         for (int i = 0; i < job.getResults().size(); i++) {
             String result = job.getResult(i);
-            square(job.getRow(), i, LaunchpadColor.forResult(result));
+            if ("BUILDING".equalsIgnoreCase(result)) {
+                square(job.getRow(), i, LaunchpadColor.forResult(result), true);
+            } else {
+                square(job.getRow(), i, LaunchpadColor.forResult(result));
+            }
         }
     }
 
